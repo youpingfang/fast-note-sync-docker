@@ -2,7 +2,7 @@
 
 A command-line client for syncing Obsidian vaults and configuration files to a remote FastNodeSync server via WebSocket.
 
-> **Background** — This project is a containerized Linux client for [fast-note-sync-service](https://github.com/youpingfang/fast-note-sync-service). The original service was designed for macOS; fns-cli brings the same sync capability to Linux through Docker, enabling Linux users to sync their Obsidian vaults with the FastNodeSync server.
+> **Background** — This project is a containerized Linux client for [fast-note-sync-service](https://github.com/haierkeys/fast-note-sync-service). The original service was designed for macOS; fns-cli brings the same sync capability to Linux through Docker, enabling Linux users to sync their Obsidian vaults with the FastNodeSync server.
 
 ## Features
 
