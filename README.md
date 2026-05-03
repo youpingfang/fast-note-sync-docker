@@ -124,8 +124,8 @@ mkdir -p vault
 ### 也可以手动克隆仓库，构建并运行
 
 ```bash
-git clone https://github.com/youpingfang/fast-note-sync-docker.git
-cd fast-note-sync-docker
+git clone https://github.com/youpingfang/obsidian-note-sync-docker.git
+cd obsidian-note-sync-docker
 ```
 
 ```bash
