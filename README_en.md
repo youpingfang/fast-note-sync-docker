@@ -56,61 +56,88 @@ The client communicates with the server using a pipe-delimited (`|`) text protoc
 | [watchdog](https://github.com/gorakhargosh/watchdog) | ≥4.0 | File system monitoring |
 | [PyYAML](https://pyyaml.org/) | ≥6.0 | YAML config parsing |
 
-## Installation
+## Quick Start
+
+### 1. Clone the repo
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/fns-cli.git
-cd fns-cli
+git clone https://github.com/youpingfang/fast-note-sync-docker.git
+cd fast-note-sync-docker
+```
 
+### 2. Configure environment variables
+
+```bash
+mkdir -p vault
+cp .env.example .env
+```
+
+Edit `.env` with your server info:
+
+```env
+FNS_API=http://your-server:9000
+FNS_TOKEN=your-jwt-token
+FNS_VAULT=Obsidian Vault
+FNS_WATCH_PATH=/app/vault
+FNS_SYNC_NOTES=true
+FNS_SYNC_FILES=true
+FNS_SYNC_CONFIG=false
+FNS_EXCLUDE_PATTERNS=.git/**,.trash/**,*.tmp,.fns_state.json
+FNS_FILE_CHUNK_SIZE=524288
+FNS_RECONNECT_MAX_RETRIES=15
+FNS_RECONNECT_BASE_DELAY=3
+FNS_HEARTBEAT_INTERVAL=30
+FNS_LOG_LEVEL=INFO
+```
+
+### 3. Build and run
+
+```bash
+docker-compose up -d
+```
+
+View logs:
+
+```bash
+docker-compose logs -f
+```
+
+## Environment Variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `FNS_API` | — | FastNodeSync server address |
+| `FNS_TOKEN` | — | JWT authentication token |
+| `FNS_VAULT` | — | Vault name on server |
+| `FNS_WATCH_PATH` | `/app/vault` | Local vault mount path |
+| `FNS_SYNC_NOTES` | `true` | Enable note sync |
+| `FNS_SYNC_FILES` | `true` | Enable file sync |
+| `FNS_SYNC_CONFIG` | `false` | Enable config sync |
+| `FNS_EXCLUDE_PATTERNS` | `.git/**,...` | Comma-separated exclusion patterns |
+| `FNS_FILE_CHUNK_SIZE` | `524288` | File chunk size (bytes) |
+| `FNS_RECONNECT_MAX_RETRIES` | `15` | Max reconnect attempts |
+| `FNS_RECONNECT_BASE_DELAY` | `3` | Reconnect base delay (seconds) |
+| `FNS_HEARTBEAT_INTERVAL` | `30` | Heartbeat interval (seconds) |
+| `FNS_LOG_LEVEL` | `INFO` | Log level |
+| `FNS_LOG_FILE` | `""` | Log file path (empty = stdout) |
+
+## Direct Run (non-Docker)
+
+```bash
 # Install dependencies
 pip install -r requirements.txt
 
-# Run directly
-python -m fns_cli.main --help
+# Set environment variables
+export FNS_API=http://your-server:9000
+export FNS_TOKEN=your-token
+export FNS_VAULT="My Vault"
+export FNS_WATCH_PATH=/path/to/vault
+
+# Run
+python -m fns_cli.main run
 ```
 
-## Configuration
-
-Create a `config.yaml` in the project root:
-
-```yaml
-server:
-  api: "http://your-server:9000"   # FastNodeSync server address
-  token: "your-jwt-token"           # Authentication token
-  vault: "My Vault"                 # Vault name on server
-
-vault_path: "/path/to/your/vault"   # Local Obsidian vault path
-
-sync:
-  sync_notes: true                  # Enable note sync
-  sync_files: true                  # Enable file sync
-  sync_config: false                # Disable config sync
-  exclude_patterns:                 # Glob patterns to exclude
-    - ".git/**"
-    - ".trash/**"
-    - "*.tmp"
-    - ".fns_state.json"
-
-logging:
-  level: "INFO"                    # DEBUG / INFO / WARNING / ERROR
-  file: "fns.log"
-```
-
-### Environment Variables (alternative)
-
-| Variable | Description |
-|---|---|
-| `FNS_API` | Server WebSocket / HTTP address |
-| `FNS_TOKEN` | JWT authentication token |
-| `FNS_VAULT` | Vault name |
-| `FNS_WATCH_PATH` | Local vault path |
-| `FNS_SYNC_NOTES` | Enable note sync (`true`/`false`) |
-| `FNS_SYNC_FILES` | Enable file sync (`true`/`false`) |
-| `FNS_SYNC_CONFIG` | Enable config sync (`true`/`false`) |
-| `FNS_EXCLUDE_PATTERNS` | Comma-separated exclusion patterns |
-
-## Usage
+## CLI Commands
 
 ```bash
 # Start continuous watch + sync mode
@@ -125,29 +152,9 @@ python -m fns_cli.main push
 # Pull all remote files to local vault
 python -m fns_cli.main pull
 
-# Show sync status and configuration
+# Show sync status
 python -m fns_cli.main status
-
-# Use custom config file
-python -m fns_cli.main -c config.prod.yaml run
 ```
-
-## Docker
-
-```bash
-# Build
-docker build -t fns-cli .
-
-# Run
-docker run --rm -it \
-  -v $(pwd)/vault:/app/vault \
-  -e FNS_API=http://server:9000 \
-  -e FNS_TOKEN=your-token \
-  -e FNS_VAULT="My Vault" \
-  fns-cli run
-```
-
-Or use the included `docker-compose.yml` for a full stack deployment.
 
 ## License
 

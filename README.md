@@ -56,61 +56,88 @@ fns-cli (客户端)
 | [watchdog](https://github.com/gorakhargosh/watchdog) | ≥4.0 | 文件系统监控 |
 | [PyYAML](https://pyyaml.org/) | ≥6.0 | YAML 配置文件解析 |
 
-## 安装
+## 快速开始
+
+### 1. 克隆仓库
 
 ```bash
-# 克隆仓库
-git clone https://github.com/youpingfang/fns-sync-docker.git
-cd fns-sync-docker
+git clone https://github.com/youpingfang/fast-note-sync-docker.git
+cd fast-note-sync-docker
+```
 
+### 2. 配置环境变量
+
+```bash
+mkdir -p vault
+cp .env.example .env
+```
+
+编辑 `.env`，填入你的服务器信息：
+
+```env
+FNS_API=http://your-server:9000
+FNS_TOKEN=your-jwt-token
+FNS_VAULT=Obsidian Vault
+FNS_WATCH_PATH=/app/vault
+FNS_SYNC_NOTES=true
+FNS_SYNC_FILES=true
+FNS_SYNC_CONFIG=false
+FNS_EXCLUDE_PATTERNS=.git/**,.trash/**,*.tmp,.fns_state.json
+FNS_FILE_CHUNK_SIZE=524288
+FNS_RECONNECT_MAX_RETRIES=15
+FNS_RECONNECT_BASE_DELAY=3
+FNS_HEARTBEAT_INTERVAL=30
+FNS_LOG_LEVEL=INFO
+```
+
+### 3. 构建并运行
+
+```bash
+docker-compose up -d
+```
+
+查看日志：
+
+```bash
+docker-compose logs -f
+```
+
+## 环境变量说明
+
+| 变量 | 默认值 | 说明 |
+|---|---|---|
+| `FNS_API` | — | FastNodeSync 服务器地址 |
+| `FNS_TOKEN` | — | JWT 认证 Token |
+| `FNS_VAULT` | — | 服务器上的保险库名称 |
+| `FNS_WATCH_PATH` | `/app/vault` | 本地 vault 挂载路径 |
+| `FNS_SYNC_NOTES` | `true` | 启用笔记同步 |
+| `FNS_SYNC_FILES` | `true` | 启用文件同步 |
+| `FNS_SYNC_CONFIG` | `false` | 启用配置同步 |
+| `FNS_EXCLUDE_PATTERNS` | `.git/**,...` | 逗号分隔的排除规则 |
+| `FNS_FILE_CHUNK_SIZE` | `524288` | 文件分块大小（字节） |
+| `FNS_RECONNECT_MAX_RETRIES` | `15` | 最大重连次数 |
+| `FNS_RECONNECT_BASE_DELAY` | `3` | 重连基础延迟（秒） |
+| `FNS_HEARTBEAT_INTERVAL` | `30` | 心跳间隔（秒） |
+| `FNS_LOG_LEVEL` | `INFO` | 日志级别 |
+| `FNS_LOG_FILE` | `""` | 日志文件路径（空为 stdout） |
+
+## 直接运行（非 Docker）
+
+```bash
 # 安装依赖
 pip install -r requirements.txt
 
-# 直接运行
-python -m fns_cli.main --help
+# 设置环境变量
+export FNS_API=http://your-server:9000
+export FNS_TOKEN=your-token
+export FNS_VAULT="My Vault"
+export FNS_WATCH_PATH=/path/to/vault
+
+# 运行
+python -m fns_cli.main run
 ```
 
-## 配置
-
-在项目根目录创建 `config.yaml`：
-
-```yaml
-server:
-  api: "http://your-server:9000"   # FastNodeSync 服务器地址
-  token: "your-jwt-token"          # 认证 Token
-  vault: "My Vault"                # 服务器上的保险库名称
-
-vault_path: "/path/to/your/vault"  # 本地 Obsidian 保险库路径
-
-sync:
-  sync_notes: true                  # 启用笔记同步
-  sync_files: true                  # 启用文件同步
-  sync_config: false                # 禁用配置同步
-  exclude_patterns:                 # 排除规则（glob 模式）
-    - ".git/**"
-    - ".trash/**"
-    - "*.tmp"
-    - ".fns_state.json"
-
-logging:
-  level: "INFO"                    # DEBUG / INFO / WARNING / ERROR
-  file: "fns.log"
-```
-
-### 环境变量（替代方案）
-
-| 变量 | 说明 |
-|---|---|
-| `FNS_API` | 服务器 WebSocket / HTTP 地址 |
-| `FNS_TOKEN` | JWT 认证 Token |
-| `FNS_VAULT` | 保险库名称 |
-| `FNS_WATCH_PATH` | 本地 vault 路径 |
-| `FNS_SYNC_NOTES` | 启用笔记同步（`true`/`false`） |
-| `FNS_SYNC_FILES` | 启用文件同步（`true`/`false`） |
-| `FNS_SYNC_CONFIG` | 启用配置同步（`true`/`false`） |
-| `FNS_EXCLUDE_PATTERNS` | 逗号分隔的排除规则 |
-
-## 使用
+## CLI 命令
 
 ```bash
 # 启动持续监听 + 同步模式
@@ -125,29 +152,9 @@ python -m fns_cli.main push
 # 拉取所有远程文件到本地
 python -m fns_cli.main pull
 
-# 查看同步状态和配置
+# 查看同步状态
 python -m fns_cli.main status
-
-# 指定自定义配置文件
-python -m fns_cli.main -c config.prod.yaml run
 ```
-
-## Docker
-
-```bash
-# 构建镜像
-docker build -t fns-cli .
-
-# 运行
-docker run --rm -it \
-  -v $(pwd)/vault:/app/vault \
-  -e FNS_API=http://server:9000 \
-  -e FNS_TOKEN=your-token \
-  -e FNS_VAULT="My Vault" \
-  fns-cli run
-```
-
-或使用项目自带的 `docker-compose.yml` 进行完整部署。
 
 ## License
 
