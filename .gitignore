@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.env
+*.log
+fns.log
+.fns_state.json
+vault/
+cache/
+dist/
+build/
+.eggs/

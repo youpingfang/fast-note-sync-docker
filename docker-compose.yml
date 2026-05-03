@@ -1,0 +1,26 @@
+services:
+  fns-cli:
+    image: youpingfang/fns-cli:latest
+    container_name: fns-cli
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      FNS_API: http://ip:9000
+      FNS_TOKEN: xxxxx
+      FNS_VAULT: Obsidian Vault
+      FNS_WATCH_PATH: /app/vault
+      FNS_SYNC_NOTES: "true"
+      FNS_SYNC_FILES: "true"
+      FNS_SYNC_CONFIG: "false"
+      FNS_EXCLUDE_PATTERNS: .git/**,.trash/**,*.tmp,.fns_state.json
+      FNS_FILE_CHUNK_SIZE: "524288"
+      FNS_RECONNECT_MAX_RETRIES: "15"
+      FNS_RECONNECT_BASE_DELAY: "3"
+      FNS_HEARTBEAT_INTERVAL: "30"
+      FNS_LOG_LEVEL: INFO
+      FNS_LOG_FILE: ""
+    volumes:
+      - ${PWD}/vault:/app/vault:rw
+    restart: unless-stopped
+networks: {}
