@@ -3,6 +3,8 @@
 命令行客户端，通过 WebSocket 将 Obsidian 笔记库和配置文件同步到远程 FastNodeSync 服务器。
 
 > **背景** —— 本项目是为 [fast-note-sync-service](https://github.com/haierkeys/fast-note-sync-service) 打造的容器化 Linux 客户端。原有服务面向 macOS 设计，fns-cli 通过 Docker 将相同的同步能力带入 Linux，让 Linux 用户也能将 Obsidian 笔记库与 FastNodeSync 服务器同步。
+>
+> 另有 Go 语言实现的跨平台客户端：[FastNodeSync-CLI](https://github.com/Go1c/FastNodeSync-CLI)
 
 ## 功能特性
 
